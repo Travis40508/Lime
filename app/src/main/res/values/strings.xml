@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">ToDoList</string>
+    <string name="prompt1">Welcome to LimeList!</string>
+    <string name="prompt2">The following is an Application for making a To-Do List!</string>
+    <string name="prompt3">Simply click the Big Green button to begin</string>
+    <string name="prompt4">On the next screen, click Add to add your To-Do List task</string>
+    <string name="prompt5">Add a title, Category, Due-Date, and Text to make your task!</string>
+    <string name="prompt6">Click save and watch your tasks be automatically sorted into categories!</string>
+    <string name="prompt7">Enjoy!</string>
+
+</resources>
