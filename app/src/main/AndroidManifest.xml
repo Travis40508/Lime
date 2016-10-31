@@ -15,9 +15,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Groceries" />
+        <activity android:name=".actualList" />
         <activity android:name=".userInput" />
-        <activity android:name=".groceryListItem" />
+        <activity android:name=".actualListItem" />
     </application>
 
 </manifest>

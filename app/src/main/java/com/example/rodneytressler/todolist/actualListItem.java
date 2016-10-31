@@ -4,7 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
-public class groceryListItem implements Comparable<groceryListItem>{
+public class actualListItem implements Comparable<actualListItem>{
+
+    //Serialization allows for Persistence.
     @SerializedName("title")
     private String title;
 
@@ -29,7 +31,8 @@ public class groceryListItem implements Comparable<groceryListItem>{
     @SerializedName("time")
     private String time;
 
-    public groceryListItem(String title, String text, String date, String category, Date currentDate, String day, String month, String time) {
+    //Creation of Object to be used in the layout that will be inflated into the List View that compromises the list.
+    public actualListItem(String title, String text, String date, String category, Date currentDate, String day, String month, String time) {
         this.title = title;
         this.text = text;
         this.date = date;
@@ -40,6 +43,7 @@ public class groceryListItem implements Comparable<groceryListItem>{
         this.time = time;
     }
 
+    //Getters and Setters.
     public String getTitle() {
         return title;
     }
@@ -104,8 +108,8 @@ public class groceryListItem implements Comparable<groceryListItem>{
         this.time = time;
     }
 
-    public int compareTo(groceryListItem another) {
-//        return another.getDate().compareTo(getDate()); // puts newest on top
+    //Allows for sorting by Category so that they're grouped together.
+    public int compareTo(actualListItem another) {
         return getCategory().compareTo(another.getCategory()); //puts newest on bottom
     }
 

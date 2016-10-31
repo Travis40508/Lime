@@ -8,8 +8,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+//Class purpose is to present instructions to user and begin the app.
 public class MainActivity extends AppCompatActivity {
-    private ImageView buttonGrocery;
+    //Fields to be used in activity.
+    private ImageView buttonStart;
     private TextView prompt;
     private Button buttonPrompt;
     @Override
@@ -17,20 +19,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        buttonGrocery = (ImageView) findViewById(R.id.main_button_groceries);
+        //Declaration of fields within the layout.
+        buttonStart = (ImageView) findViewById(R.id.main_button_groceries);
         prompt = (TextView) findViewById(R.id.startPrompt);
         buttonPrompt = (Button) findViewById(R.id.button_prompt);
 
         startApp();
-        buttonGrocery.setOnClickListener(new View.OnClickListener() {
+        buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 groceryList();
             }
         });
     }
+    //Gives user step-by-step instructions on how to use app.
     public void groceryList() {
-        Intent intent = new Intent(this, Groceries.class);
+        Intent intent = new Intent(this, actualList.class);
         startActivity(intent);
     }
     public void startApp() {
@@ -88,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    //Makes prompts disappear and launches the start app button.
     public void seventhPrompt() {
         prompt.setText(R.string.prompt7);
         buttonPrompt.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 prompt.setVisibility(View.GONE);
                 buttonPrompt.setVisibility(View.GONE);
-                buttonGrocery.setVisibility(View.VISIBLE);
+                buttonStart.setVisibility(View.VISIBLE);
             }
         });
     }

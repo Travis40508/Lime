@@ -20,8 +20,9 @@ import java.util.ArrayList;
 
 public class userInput extends AppCompatActivity {
     private static final int SELECTED_PICTURE = 1;
-    ImageView iv;
 
+    //Sets up fields to be used in user input.
+    ImageView iv;
     private Button userInputSaveButton;
     private EditText userInputTitle;
     private EditText userInputText;
@@ -31,13 +32,14 @@ public class userInput extends AppCompatActivity {
     private EditText userInputcategory;
     private Button addImageButton;
     private String fullDate;
-    groceryListItem item1;
-    ArrayList<groceryListItem> arrayOfTasks = new ArrayList<groceryListItem>();
+    actualListItem item1;
+    ArrayList<actualListItem> arrayOfTasks = new ArrayList<actualListItem>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_input);
 
+        //Declares variables with EditText values in the layout.
         iv = (ImageView) findViewById(R.id.image_input);
         userInputTitle = (EditText) findViewById(R.id.user_input_title);
         userInputText = (EditText) findViewById(R.id.user_input_text);
@@ -48,16 +50,19 @@ public class userInput extends AppCompatActivity {
         userInputcategory = (EditText) findViewById(R.id.category_edit);
         addImageButton = (Button) findViewById(R.id.user_input_button_image);
 
-
+        //Adds image.
         addImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 btnClick();
             }
         });
+
+        //When the save button is clicked, takes information and sends it to List Activity.
         userInputSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Declares variables to be text in each EditText view.
                 String month = userInputMonth.getText().toString();
                 String day = userInputDay.getText().toString();
                 String time = userInputTime.getText().toString();
@@ -65,6 +70,8 @@ public class userInput extends AppCompatActivity {
                 String title = userInputTitle.getText().toString();
                 String text = userInputText.getText().toString();
                 String category = userInputcategory.getText().toString();
+
+                //Sends all of the text to the List View on the List Activity.
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("titleResult", title);
                 returnIntent.putExtra("textResult", text);
@@ -78,6 +85,9 @@ public class userInput extends AppCompatActivity {
 
             }
         });
+
+        //Gets the information from the list item that was clicked and fills in the blanks to allow
+        //for seemless/easier editing.
         Intent intent = getIntent();
         String title = intent.getStringExtra("editTitle");
         String text = intent.getStringExtra("editText");
@@ -93,11 +103,13 @@ public class userInput extends AppCompatActivity {
         userInputTime.setText(time);
     }
 
+    //Allows user to choose item from gallery and add it to their list.
     public void btnClick() {
         Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(i, SELECTED_PICTURE);
     }
 
+    //Makes the image sit into the image view that's in the edit layout.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

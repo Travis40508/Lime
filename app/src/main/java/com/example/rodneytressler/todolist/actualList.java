@@ -1,13 +1,11 @@
 package com.example.rodneytressler.todolist;
 
-import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -25,29 +23,36 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class Groceries extends AppCompatActivity {
-    private Button groceriesAddButton;
+//actualList was initially intended to be a Category until it was decided that the only difference in each class
+// was name, so a naming block was more efficient.
+public class actualList extends AppCompatActivity {
+    private Button taskAddButton;
 
-
-    ArrayList<groceryListItem> arrayOfTasks = new ArrayList<groceryListItem>();
+// Declare fields to be used throughout the class.
+    ArrayList<actualListItem> arrayOfTasks = new ArrayList<actualListItem>();
     String filename = "TodoItemsCool";
     Gson gson = new Gson();
-    List<groceryListItem> todos = new ArrayList<>();
+    List<actualListItem> todos = new ArrayList<>();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_groceries);
+        setContentView(R.layout.activity_list);
+        //run setupNotes, which will both read and write files to allow for persistence.
         setupNotes();
+
+        //sets Custom Adapter so that the item layout can be placed into a List View on the main list.
         final CustomAdapter adapter = new CustomAdapter(this, arrayOfTasks);
-        ListView groceryListView = (ListView) findViewById(R.id.groceries_list_full_list);
+        ListView groceryListView = (ListView) findViewById(R.id.actual_list_full_list);
         groceryListView.setAdapter(adapter);
 
+
+        //Sets up each item in the List View to, on click, bring up another intent to allow editing.
         groceryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                groceryListItem item = arrayOfTasks.get(position);
+                actualListItem item = arrayOfTasks.get(position);
                 Intent detailScreen = new Intent(getApplicationContext(), userInput.class);
                 detailScreen.putExtra("editTitle", item.getTitle());
                 detailScreen.putExtra("editText", item.getText());
@@ -58,17 +63,20 @@ public class Groceries extends AppCompatActivity {
 
             }
         });
+
+
+        //Allows each item in the List View, on long click, to be completed/deleted.
         groceryListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(Groceries.this);
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(actualList.this);
                 alertBuilder.setTitle("Task Completed?");
                 alertBuilder.setMessage("You sure?");
                 alertBuilder.setNegativeButton("Cancel", null);
                 alertBuilder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        groceryListItem note = arrayOfTasks.get(position);
+                        actualListItem note = arrayOfTasks.get(position);
                         arrayOfTasks.remove(position);
                         adapter.notifyDataSetChanged();
                         writeTodos();
@@ -78,8 +86,10 @@ public class Groceries extends AppCompatActivity {
                 return true;
             }
         });
-        groceriesAddButton = (Button) findViewById(R.id.groceries_button_add);
-        groceriesAddButton.setOnClickListener(new View.OnClickListener() {
+
+        //Add task button, brings up the Edit Text user input Activity.
+        taskAddButton = (Button) findViewById(R.id.groceries_button_add);
+        taskAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 userInput();
@@ -88,6 +98,8 @@ public class Groceries extends AppCompatActivity {
 
     }
 
+
+    //Reads all of the items in the list so that they can be brought up upon app creation.
     private void readTodos(File todoFile) {
         FileInputStream inputStream = null;
         String todosText = "";
@@ -100,11 +112,13 @@ public class Groceries extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            groceryListItem[] todoList = gson.fromJson(todosText, groceryListItem[].class);
+            actualListItem[] todoList = gson.fromJson(todosText, actualListItem[].class);
             todos = Arrays.asList(todoList);
         }
     }
 
+
+    //Writes all of the items into a file to be read by readTodos on create.
     private void writeTodos() {
         FileOutputStream outputStream = null;
         try {
@@ -126,17 +140,22 @@ public class Groceries extends AppCompatActivity {
     }
 
 
+
+    //Method that starts the input Activity with the results being returned to the list to be posted.
     public void userInput() {
         Intent intent = new Intent(this, userInput.class);
         startActivityForResult(intent, 1);
     }
 
+
+    //Instructions for the information that's returned on the User Input activity.
+    //Makes sure that the information is added to the adapter and List View.
     protected void onActivityResult(int requestCode, int resultCode, Intent view) {
         super.onActivityResult(requestCode, resultCode, view);
         getIntent();
         if (resultCode == RESULT_OK) {
             final CustomAdapter adapter = new CustomAdapter(this, arrayOfTasks);
-            ListView groceryListView = (ListView) findViewById(R.id.groceries_list_full_list);
+            ListView groceryListView = (ListView) findViewById(R.id.actual_list_full_list);
             groceryListView.setAdapter(adapter);
             String awesomeTitle = view.getStringExtra("titleResult");
             String awesomeText = view.getStringExtra("textResult");
@@ -146,15 +165,15 @@ public class Groceries extends AppCompatActivity {
             String awesomeMonth = view.getStringExtra("monthDude");
             String awesomeTime = view.getStringExtra("timeDude");
             Date date = new Date();
-            groceryListItem item1 = new groceryListItem(awesomeTitle, awesomeText, awesomeDate, awesomeCategory, date, awesomeDay, awesomeMonth, awesomeTime);
+            actualListItem item1 = new actualListItem(awesomeTitle, awesomeText, awesomeDate, awesomeCategory, date, awesomeDay, awesomeMonth, awesomeTime);
             adapter.add(item1);
             Collections.sort(arrayOfTasks);
 
-
+            //Sets short click to allow editing and for the information to carry over to the user input Activity.
             groceryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    groceryListItem item = arrayOfTasks.get(position);
+                    actualListItem item = arrayOfTasks.get(position);
                     Intent detailScreen = new Intent(getApplicationContext(), userInput.class);
                     detailScreen.putExtra("editTitle", item.getTitle());
                     detailScreen.putExtra("editText", item.getText());
@@ -168,17 +187,19 @@ public class Groceries extends AppCompatActivity {
 
                 }
             });
+
+            //Allows for long-click to give the ability to delete/complete Tasks.
             groceryListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(Groceries.this);
+                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(actualList.this);
                     alertBuilder.setTitle("Task Completed?");
                     alertBuilder.setMessage("You sure?");
                     alertBuilder.setNegativeButton("Cancel", null);
                     alertBuilder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            groceryListItem note = arrayOfTasks.get(position);
+                            actualListItem note = arrayOfTasks.get(position);
                             deleteFile("##" + note.getTitle());
                             arrayOfTasks.remove(position);
                             adapter.notifyDataSetChanged();
@@ -195,6 +216,7 @@ public class Groceries extends AppCompatActivity {
         writeTodos();
     }
 
+    //Begins the initiation of Persistence within the app. Calls for the reading and writing.
     public void setupNotes() {
         arrayOfTasks = new ArrayList<>();
 
@@ -203,17 +225,17 @@ public class Groceries extends AppCompatActivity {
         if (todoFile.exists()) {
             readTodos(todoFile);
 
-            for (groceryListItem todo : todos) {
+            for (actualListItem todo : todos) {
                 arrayOfTasks.add(todo);
 
 
             }
         } else {
-            // If the file doesn't exist, create it
+            // If the file doesn't exist, create it. Think it looks better without initial tasks, though.
 //            Date date = new Date();
-//            todos.add(new groceryListItem("todo 1","A todo", "thing", "thing", date));
-//            todos.add(new groceryListItem("todo 2","Another todo", "thing", "thing", date));
-//            todos.add(new groceryListItem("todo 3","One more todo", "thing", "thing", date));
+//            todos.add(new actualListItem("todo 1","A todo", "thing", "thing", date));
+//            todos.add(new actualListItem("todo 2","Another todo", "thing", "thing", date));
+//            todos.add(new actualListItem("todo 3","One more todo", "thing", "thing", date));
 
             writeTodos();
         }
